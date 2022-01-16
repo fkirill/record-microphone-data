@@ -1,6 +1,5 @@
 package org.fkirill
 
-import java.io.BufferedOutputStream
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -51,14 +50,15 @@ class SoundRecorder(
         } catch (ex: Exception) {
             throw IllegalStateException("Error opening line", ex)
         }
-        val startTime = System.nanoTime()
         try {
-            ByteArrayOutputStream().use { out ->
-                line.use { line ->
-                    val rawAudioData = recordAudio(line, recordDuration)
-                    val audioStream = AudioInputStream(ByteArrayInputStream(rawAudioData), format, rawAudioData.size.toLong()/format.frameSize)
-                    AudioSystem.write(audioStream, AudioFileFormat.Type.WAVE, outputFile)
-                }
+            line.use { line ->
+                val rawAudioData = recordAudio(line, recordDuration)
+                val audioStream = AudioInputStream(
+                    ByteArrayInputStream(rawAudioData),
+                    format,
+                    rawAudioData.size.toLong() / format.frameSize
+                )
+                AudioSystem.write(audioStream, AudioFileFormat.Type.WAVE, outputFile)
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
